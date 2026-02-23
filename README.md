@@ -32,3 +32,11 @@ node dist/cli.js auth:status
 ```
 
 Session string is persisted at `TG_SESSION_PATH` (default `/data/telegram.session`).
+
+## Message commands
+
+```bash
+node dist/cli.js read --chat -1001234567890 --limit 20
+node dist/cli.js unread --chat -1001234567890 --limit 50
+node dist/cli.js send --chat -1001234567890 --text "hello"
+```
