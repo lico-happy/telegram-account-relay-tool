@@ -61,8 +61,11 @@ node dist/cli.js auth:status
 # read/send
 node dist/cli.js read --chat -1001234567890 --limit 20
 node dist/cli.js unread --chat -1001234567890 --limit 50
+node dist/cli.js unread:consume --chat -1001234567890 --limit 50
 node dist/cli.js send --chat -1001234567890 --text "hello"
 ```
+
+`unread:consume` returns unread messages and marks them as read in Telegram, then advances the DB cursor.
 
 ## Docker usage
 
