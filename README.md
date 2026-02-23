@@ -22,3 +22,13 @@ docker run --rm --env-file .env tg-relay health
 
 - Never commit real API credentials
 - Use env vars only
+
+## Auth (Telegram user account)
+
+```bash
+npm run build
+node dist/cli.js auth:login
+node dist/cli.js auth:status
+```
+
+Session string is persisted at `TG_SESSION_PATH` (default `/data/telegram.session`).
