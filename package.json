@@ -17,7 +17,8 @@
     "dotenv": "^16.4.5",
     "telegram": "^2.26.22",
     "yargs": "^17.7.2",
-    "input": "^1.0.1"
+    "input": "^1.0.1",
+    "express": "^4.21.2"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
@@ -25,6 +26,7 @@
     "eslint": "^9.17.0",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
-    "vitest": "^2.1.8"
+    "vitest": "^2.1.8",
+    "@types/express": "^5.0.0"
   }
 }

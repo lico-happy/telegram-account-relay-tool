@@ -112,3 +112,12 @@ Unread tracking now stores per-chat cursor metadata:
 - `lastMessageId`
 - `lastTimestamp`
 - `lastRunAt`
+
+## Webhook receiver mode
+
+```bash
+node dist/cli.js webhook:serve
+node dist/cli.js queue:consume --limit 20
+```
+
+Use this mode to ingest external updates in near real-time and process unread queue entries later.
