@@ -46,3 +46,11 @@ node dist/cli.js send --chat -1001234567890 --text "hello"
 - duplicate message window (hash-based)
 - per-chat send cooldown
 - policy state persisted in `TG_POLICY_STATE_PATH`
+
+## OpenClaw wrapper mode
+
+```bash
+node dist/cli.js openclaw --payload '{"action":"read","chat":"-100123","limit":10}'
+node dist/cli.js openclaw --payload '{"action":"unread","chat":"-100123","limit":50}'
+node dist/cli.js openclaw --payload '{"action":"send","chat":"-100123","text":"hello"}'
+```
