@@ -1,6 +1,6 @@
 import { createClient } from './telegram-client.js';
-import { loadCheckpoint, saveCheckpoint } from './checkpoint.js';
 import { canSend } from './policy.js';
+import { getCursor, setCursor } from './checkpoint.js';
 
 export async function readLatest(chatId: string, limit: number): Promise<void> {
   const client = await createClient();
@@ -11,8 +11,8 @@ export async function readLatest(chatId: string, limit: number): Promise<void> {
 }
 
 export async function readUnread(chatId: string, limit: number): Promise<void> {
-  const cp = loadCheckpoint();
-  const minId = cp[chatId]?.lastMessageId ?? 0;
+  const cursor = await getCursor(chatId);
+  const minId = cursor?.lastMessageId ?? 0;
   const client = await createClient();
   const msgs = await client.getMessages(chatId, { limit });
   const unread = msgs
@@ -21,19 +21,20 @@ export async function readUnread(chatId: string, limit: number): Promise<void> {
     .reverse();
 
   const maxId = unread.reduce((acc, m) => Math.max(acc, Number(m.id ?? 0)), minId);
-  cp[chatId] = {
+  const nextCursor = {
     lastMessageId: maxId,
-    lastTimestamp: unread.length ? String(unread[unread.length - 1].date ?? '') : cp[chatId]?.lastTimestamp,
+    lastTimestamp: unread.length ? String(unread[unread.length - 1].date ?? '') : cursor?.lastTimestamp,
     lastRunAt: new Date().toISOString()
   };
-  saveCheckpoint(cp);
 
-  console.log(JSON.stringify({ ok: true, minId, maxId, cursor: cp[chatId], count: unread.length, messages: unread }, null, 2));
+  await setCursor(chatId, nextCursor);
+
+  console.log(JSON.stringify({ ok: true, minId, maxId, cursor: nextCursor, count: unread.length, messages: unread }, null, 2));
   await client.disconnect();
 }
 
 export async function sendMessage(chatId: string, text: string): Promise<void> {
-  const gate = canSend(chatId, text);
+  const gate = await canSend(chatId, text);
   if (!gate.ok) {
     console.log(JSON.stringify({ ok: false, blocked: true, reason: gate.reason }, null, 2));
     return;

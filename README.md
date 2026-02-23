@@ -51,6 +51,8 @@ npm run build
 
 # health
 node dist/cli.js health
+# init database tables
+node dist/cli.js db:migrate
 
 # login
 node dist/cli.js auth:login
