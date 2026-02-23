@@ -1,5 +1,6 @@
 import { createClient } from './telegram-client.js';
 import { loadCheckpoint, saveCheckpoint } from './checkpoint.js';
+import { canSend } from './policy.js';
 
 export async function readLatest(chatId: string, limit: number): Promise<void> {
   const client = await createClient();
@@ -28,6 +29,11 @@ export async function readUnread(chatId: string, limit: number): Promise<void> {
 }
 
 export async function sendMessage(chatId: string, text: string): Promise<void> {
+  const gate = canSend(chatId, text);
+  if (!gate.ok) {
+    console.log(JSON.stringify({ ok: false, blocked: true, reason: gate.reason }, null, 2));
+    return;
+  }
   const client = await createClient();
   const sent = await client.sendMessage(chatId, { message: text });
   console.log(JSON.stringify({ ok: true, id: sent.id }, null, 2));

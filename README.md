@@ -40,3 +40,9 @@ node dist/cli.js read --chat -1001234567890 --limit 20
 node dist/cli.js unread --chat -1001234567890 --limit 50
 node dist/cli.js send --chat -1001234567890 --text "hello"
 ```
+
+## Loop prevention / safety gates
+
+- duplicate message window (hash-based)
+- per-chat send cooldown
+- policy state persisted in `TG_POLICY_STATE_PATH`
