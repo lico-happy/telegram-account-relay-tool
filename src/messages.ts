@@ -12,7 +12,7 @@ export async function readLatest(chatId: string, limit: number): Promise<void> {
 
 export async function readUnread(chatId: string, limit: number): Promise<void> {
   const cp = loadCheckpoint();
-  const minId = cp[chatId] ?? 0;
+  const minId = cp[chatId]?.lastMessageId ?? 0;
   const client = await createClient();
   const msgs = await client.getMessages(chatId, { limit });
   const unread = msgs
@@ -21,10 +21,14 @@ export async function readUnread(chatId: string, limit: number): Promise<void> {
     .reverse();
 
   const maxId = unread.reduce((acc, m) => Math.max(acc, Number(m.id ?? 0)), minId);
-  cp[chatId] = maxId;
+  cp[chatId] = {
+    lastMessageId: maxId,
+    lastTimestamp: unread.length ? String(unread[unread.length - 1].date ?? '') : cp[chatId]?.lastTimestamp,
+    lastRunAt: new Date().toISOString()
+  };
   saveCheckpoint(cp);
 
-  console.log(JSON.stringify({ ok: true, minId, maxId, count: unread.length, messages: unread }, null, 2));
+  console.log(JSON.stringify({ ok: true, minId, maxId, cursor: cp[chatId], count: unread.length, messages: unread }, null, 2));
   await client.disconnect();
 }
 
