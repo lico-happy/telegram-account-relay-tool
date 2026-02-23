@@ -100,3 +100,15 @@ node dist/cli.js openclaw --payload '{"action":"send","chat":"-100123","text":"h
 - add dry-run simulation mode
 - add structured policy hooks (regex allow/deny)
 - add CI pipeline + tests
+
+## Cursor commands (unread tracking)
+
+```bash
+node dist/cli.js cursor:show --chat -1001234567890
+node dist/cli.js cursor:reset --chat -1001234567890
+```
+
+Unread tracking now stores per-chat cursor metadata:
+- `lastMessageId`
+- `lastTimestamp`
+- `lastRunAt`
