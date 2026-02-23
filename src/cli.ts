@@ -3,7 +3,7 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { loadConfig } from './config.js';
 import { authLogin, authStatus } from './auth.js';
-import { readLatest, readUnread, sendMessage } from './messages.js';
+import { readLatest, readUnread, unreadConsume, sendMessage } from './messages.js';
 import { getCursor, resetCursor } from './checkpoint.js';
 import { runOpenClawTool } from './openclaw.js';
 import { runWebhookServer, consumeWebhookQueue } from './webhook.js';
@@ -33,6 +33,12 @@ async function main() {
       'Read unread since checkpoint',
       (y) => y.option('chat', { type: 'string', demandOption: true }).option('limit', { type: 'number', default: 50 }),
       async (a) => readUnread(String(a.chat), Number(a.limit))
+    )
+    .command(
+      'unread:consume',
+      'Return unread messages and mark them read',
+      (y) => y.option('chat', { type: 'string', demandOption: true }).option('limit', { type: 'number', default: 50 }),
+      async (a) => unreadConsume(String(a.chat), Number(a.limit))
     )
     .command(
       'send',
