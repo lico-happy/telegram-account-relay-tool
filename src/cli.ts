@@ -4,6 +4,7 @@ import { hideBin } from 'yargs/helpers';
 import { loadConfig } from './config.js';
 import { authLogin, authStatus } from './auth.js';
 import { readLatest, readUnread, sendMessage } from './messages.js';
+import { runOpenClawTool } from './openclaw.js';
 
 async function main() {
   await yargs(hideBin(process.argv))
@@ -17,6 +18,7 @@ async function main() {
     .command('read', 'Read latest messages', (y) => y.option('chat', { type: 'string', demandOption: true }).option('limit', { type: 'number', default: 20 }), async (a) => readLatest(String(a.chat), Number(a.limit)))
     .command('unread', 'Read unread since checkpoint', (y) => y.option('chat', { type: 'string', demandOption: true }).option('limit', { type: 'number', default: 50 }), async (a) => readUnread(String(a.chat), Number(a.limit)))
     .command('send', 'Send message', (y) => y.option('chat', { type: 'string', demandOption: true }).option('text', { type: 'string', demandOption: true }), async (a) => sendMessage(String(a.chat), String(a.text)))
+    .command('openclaw', 'OpenClaw wrapper mode (JSON payload)', (y) => y.option('payload', { type: 'string', demandOption: true }), async (a) => runOpenClawTool(String(a.payload)))
     .demandCommand(1)
     .strict()
     .help()
