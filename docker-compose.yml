@@ -1,0 +1,40 @@
+version: '3.9'
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: tg-relay-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: tgrelay
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d tgrelay"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  app:
+    build: .
+    container_name: tg-relay-app
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgres://postgres:postgres@postgres:5432/tgrelay}
+      TG_SESSION_PATH: /data/telegram.session
+      TG_CHECKPOINT_PATH: /data/checkpoint.json
+      TG_POLICY_STATE_PATH: /data/policy-state.json
+      TG_WEBHOOK_QUEUE_PATH: /data/webhook-queue.json
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - relay_data:/data
+    command: ["health"]
+
+volumes:
+  pgdata:
+  relay_data:
