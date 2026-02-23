@@ -83,6 +83,20 @@ docker run --rm \
   tg-relay read --chat -1001234567890 --limit 20
 ```
 
+## Docker Compose (app + postgres)
+
+```bash
+docker compose up -d postgres
+
+# run migrations once
+docker compose run --rm app db:migrate
+
+# auth and message commands
+docker compose run --rm app auth:status
+docker compose run --rm app unread:consume --chat -1001234567890 --limit 50
+```
+
+
 ## OpenClaw wrapper mode
 
 ```bash
